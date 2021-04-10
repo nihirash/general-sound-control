@@ -15,14 +15,22 @@ start:
 
     ld de, argBuff : call Args.parseOne
     ld a, b : and a : jp z, noArgsTxt
-    ;; Execution branching
+
+    ;; Execution branching. Trying find commands
     ld hl, argBuff, de, cmd_pause  : call String.strcmp : jp z, GeneralSound.stopModule
-    ld hl, argBuff, de, cmd_resume : call String.strcmp : jp z, GeneralSound.continueModule
+    ld hl, argBuff, de, cmd_continue : call String.strcmp : jp z, GeneralSound.continueModule
     ld hl, argBuff, de, cmd_rewind : call String.strcmp : jp z, GeneralSound.rewind
-    ld hl, argBuff, de, cmd_reboot : call String.strcmp : jp z, GeneralSound.init.cold
+    ld hl, argBuff, de, cmd_init : call String.strcmp : jp z, GeneralSound.init.cold
+    ;; And shortcuts
+    ld hl, argBuff, de, cmd_pause_short  : call String.strcmp : jp z, GeneralSound.stopModule
+    ld hl, argBuff, de, cmd_continue_short : call String.strcmp : jp z, GeneralSound.continueModule
+    ld hl, argBuff, de, cmd_rewind_short : call String.strcmp : jp z, GeneralSound.rewind
+    ld hl, argBuff, de, cmd_init_short : call String.strcmp : jp z, GeneralSound.init.cold
     ;; If there isn't command - play module
 playGS:
     ld a, (argBuff) : and a : jp z, noArgs
+    
+    ld hl, argBuff, a, '.', bc, 80 : cpir : call nz, addExt
 
     print initingTxt
     xor a : call GeneralSound.init
@@ -53,7 +61,15 @@ loadLoop:
 .playSong
     ld a, (fp) : call Dos.fclose
     jp GeneralSound.finishLoadingModule
-    
+
+addExt:
+    xor a : ld hl, argBuff, bc, 80 : cpir : dec hl
+    ld a, '.' : ld (hl), a : inc hl
+    ld a, 'm' : ld (hl), a : inc hl
+    ld a, 'o' : ld (hl), a : inc hl 
+    ld a, 'd' : ld (hl), a : inc hl
+    xor a     : ld (hl), a
+    ret    
 
 noArgs:
     print noArgsTxt
@@ -72,9 +88,12 @@ noArgsTxt db 13
           db ".gsc <file.mod>",13, 13
           db "Or for control:", 13
           db ".gsc pause", 13
-          db ".gsc resume", 13
+          db ".gsc continue", 13
           db ".gsc rewind", 13
-          db ".gsc reboot", 13, 13, 0
+          db ".gsc init", 13, 13
+          db "You can use short command", 13
+          db "syntax - use first char as", 13
+          db "shortcut", 13, 0
 
 initingTxt db "Initing GS", 13, 0 
 
@@ -82,10 +101,14 @@ openingTxt db "Loading: ", 0
 errorTxt   db 13, "ERROR!", 13, 0
 crLf db 13, 0
 
-cmd_pause  db "pause", 0
-cmd_resume db "resume", 0
-cmd_rewind db "rewind", 0
-cmd_reboot db "reboot", 0
+cmd_pause          db "pause", 0
+cmd_pause_short    db "p", 0
+cmd_continue       db "continue", 0
+cmd_continue_short db "c", 0
+cmd_rewind         db "rewind", 0
+cmd_rewind_short   db "r", 0
+cmd_init           db "init", 0
+cmd_init_short     db "i", 0
 
 fp db 0
 
