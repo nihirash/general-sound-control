@@ -17,19 +17,19 @@
     endm
 
     module GeneralSound
+;; Control ports
 CMD  = 187
 DATA = 179
 
-CMD_WARM_RESET = #F3
-CMD_COLD_RESET = #F4
-
+;; Commands
+CMD_WARM_RESET      = #F3
+CMD_COLD_RESET      = #F4
 CMD_LOAD_MODULE     = #30
 CMD_PLAY_MODULE     = #31
 CMD_STOP_MODULE     = #32
 CMD_CONTINUE_MODULE = #33
-
-CMD_OPEN_STREAM = #D1
-CMD_CLOSE_STREAM = #D2
+CMD_OPEN_STREAM     = #D1
+CMD_CLOSE_STREAM    = #D2
 
 ; A - 0 warm reset, other - cold
 init:
@@ -40,6 +40,7 @@ init:
     GS_SendCommand CMD_COLD_RESET
     ret
 
+;; Initializes loading module
 loadModule:
     GS_SendCommand CMD_LOAD_MODULE
     GS_WaitCommand
@@ -47,11 +48,13 @@ loadModule:
     GS_WaitCommand
     ret
 
+;; Use it for streaming mod file 
 sendByte:
     out (DATA), a
     GS_WaitData
     ret
 
+;; Call it when module was loaded
 finishLoadingModule:
     GS_SendCommand CMD_CLOSE_STREAM
     GS_WaitCommand
@@ -61,10 +64,11 @@ rewind:
     GS_WaitCommand
     ret
 
+;; Works like pause too
 stopModule:
     GS_SendCommand CMD_STOP_MODULE
     ret
-
+ 
 continueModule:
     GS_SendCommand CMD_CONTINUE_MODULE
     ret
