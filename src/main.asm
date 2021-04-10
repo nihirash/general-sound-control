@@ -69,7 +69,7 @@ hello db "GeneralSound Control", 13
 noArgsTxt db 13
           db "Usage:",13
           db "To play track:",13
-          db ".gsc <file.mod>",13,13
+          db ".gsc <file.mod>",13, 13
           db "Or for control:", 13
           db ".gsc pause", 13
           db ".gsc resume", 13
