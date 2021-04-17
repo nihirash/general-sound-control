@@ -80,7 +80,7 @@ error:
     ret
 
 hello db "GeneralSound Control", 13
-      db "v. 0.1 by Nihirash", 13, 0
+      db "v. 0.2 by Nihirash", 13, 0
 
 noArgsTxt db 13
           db "Usage:",13

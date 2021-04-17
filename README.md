@@ -10,7 +10,9 @@ Remember it requires GeneralSound connected to your speccy. I've tested it with 
 
 Execute `.gsc` from your basic and see command line parameters. If specified file name - it tries to load it and play.
 
-If specified command like `pause`, `resume`, `rewind` or `reboot` - it will execute specified command.
+If specified command like `pause`, `continue`, `rewind` or `init` - it will execute specified command.
+
+Shortcuts are supported too.
 
 Reboot can be useful if some GS program crash internal GS's firmware.
 
